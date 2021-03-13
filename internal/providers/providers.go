@@ -3,8 +3,9 @@
 package providers
 
 import (
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
@@ -50,8 +51,11 @@ func Load(fn string) (*Providers, error) {
 
 // loadFile will read from file fn and toml unmarshal it's content.
 func loadFile(fn string) (map[string]interface{}, error) {
-	file, err := ioutil.ReadFile(fn)
+	file, err := os.ReadFile(fn)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, fmt.Errorf("providers: providers file %q doesn't exist", fn)
+		}
 		return nil, fmt.Errorf("providers: couldn't read providers file %q. %w", fn, err)
 	}
 
