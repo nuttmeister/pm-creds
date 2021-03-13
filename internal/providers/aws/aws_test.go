@@ -1,3 +1,5 @@
+// Package aws is an provider that can be used by the provider package to
+// retrieve aws credentials from the credentials and config files.
 package aws
 
 import (
