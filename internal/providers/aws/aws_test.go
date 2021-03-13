@@ -51,7 +51,7 @@ var tests = []struct {
 		name: "aws2",
 		config: map[string]interface{}{
 			"credentials": []string{"./testdata/credentials"},
-			"configs":     []string{"./testdata/configs"},
+			"configs":     []interface{}{"./testdata/configs"},
 		},
 		result: &Provider{
 			name:    "aws2",

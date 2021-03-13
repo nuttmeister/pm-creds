@@ -38,9 +38,16 @@ func read(config map[string]interface{}, option string) ([]string, error) {
 	if !exists {
 		return nil, nil
 	}
-	slice, ok := val.([]string)
-	if !ok {
-		return nil, fmt.Errorf("wrong type for option %q (expected []string but got %T)", option, val)
+	slice := []string{}
+	switch val.(type) {
+	case []string:
+		slice = val.([]string)
+	case []interface{}:
+		for _, row := range val.([]interface{}) {
+			slice = append(slice, fmt.Sprintf("%v", row))
+		}
+	default:
+		return nil, fmt.Errorf("wrong type for option %q (expected array of strings but got %T)", option, val)
 	}
 
 	return slice, nil
