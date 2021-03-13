@@ -33,7 +33,7 @@ func (p *Providers) Get(name string) (types.Provider, error) {
 func Load(fn string) (*Providers, error) {
 	providers := map[string]types.Provider{}
 
-	rawProviders, err := loadFile(fn)
+	rawProviders, err := loadProviders(fn)
 	if err != nil {
 		return nil, err
 	}
@@ -49,8 +49,8 @@ func Load(fn string) (*Providers, error) {
 	return &Providers{providers: providers}, nil
 }
 
-// loadFile will read from file fn and toml unmarshal it's content.
-func loadFile(fn string) (map[string]interface{}, error) {
+// loadProviders will read providers from file fn and toml unmarshal it's content.
+func loadProviders(fn string) (map[string]interface{}, error) {
 	file, err := os.ReadFile(fn)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
