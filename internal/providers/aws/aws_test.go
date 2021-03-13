@@ -35,6 +35,18 @@ var tests = []struct {
 				name:    "default",
 				payload: []byte(`{"accessKey":"key","secretKey":"secret"}`),
 			},
+			"default-with-region": {
+				name:    "default-with-region",
+				payload: []byte(`{"accessKey":"key","secretKey":"secret","region":"eu-north-1"}`),
+			},
+			"dev-service": {
+				name:    "dev-service",
+				payload: []byte(`{"accessKey":"dev-key","secretKey":"dev-secret","sessionToken":"dev-token"}`),
+			},
+			"service-prod": {
+				name:    "service-prod",
+				payload: []byte(`{"accessKey":"prod-key","secretKey":"prod-secret","sessionToken":"prod-token"}`),
+			},
 		},
 		profilesError: []string{"notexist"},
 		err:           false,
@@ -43,27 +55,34 @@ var tests = []struct {
 		name:     "aws2",
 		provType: "aws",
 		config: map[string]interface{}{
-			"configs": []string{"./testdata/configs"},
-		},
-		result: &Provider{
-			name:    "aws2",
-			configs: []string{"./testdata/configs"},
-		},
-		err: false,
-	},
-	{
-		name:     "aws3",
-		provType: "aws",
-		config: map[string]interface{}{
 			"credentials": []string{"./testdata/credentials"},
 			"configs":     []string{"./testdata/configs"},
 		},
 		result: &Provider{
-			name:    "aws3",
+			name:    "aws2",
 			creds:   []string{"./testdata/credentials"},
 			configs: []string{"./testdata/configs"},
 		},
-		err: false,
+		profiles: map[string]*Profile{
+			"default": {
+				name:    "default",
+				payload: []byte(`{"accessKey":"key","secretKey":"secret"}`),
+			},
+			"default-with-region": {
+				name:    "default-with-region",
+				payload: []byte(`{"accessKey":"key","secretKey":"secret","region":"eu-north-1"}`),
+			},
+			"dev-service": {
+				name:    "dev-service",
+				payload: []byte(`{"accessKey":"dev-key","secretKey":"dev-secret","sessionToken":"dev-token"}`),
+			},
+			"service-prod": {
+				name:    "service-prod",
+				payload: []byte(`{"accessKey":"prod-key","secretKey":"prod-secret","sessionToken":"prod-token","region":"eu-north-1"}`),
+			},
+		},
+		profilesError: []string{"notexist"},
+		err:           false,
 	},
 	{
 		name: "aws",
