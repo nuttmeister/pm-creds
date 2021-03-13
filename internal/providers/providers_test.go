@@ -7,12 +7,19 @@ import (
 )
 
 var tests = []struct {
-	file string
-	err  bool
+	file    string
+	load    []string
+	err     bool
+	loadErr bool
 }{
 	{
 		file: "./testdata/providers.toml",
-		err:  false,
+		load: []string{"aws-full", "aws-credentials", "aws-configs", "aws-default"},
+	},
+	{
+		file:    "./testdata/providers.toml",
+		load:    []string{"no-exists"},
+		loadErr: true,
 	},
 	{
 		file: "./testdata/no-file.toml",
@@ -38,7 +45,7 @@ var tests = []struct {
 
 func TestLoad(t *testing.T) {
 	for _, test := range tests {
-		_, err := Load(test.file)
+		providers, err := Load(test.file)
 		switch test.err {
 		case true:
 			assert.Error(t, err)
@@ -46,6 +53,15 @@ func TestLoad(t *testing.T) {
 			assert.NoError(t, err)
 		}
 
-		// t.Log(providers["aws"].Name())
+		for _, name := range test.load {
+			provider, err := providers.Get(name)
+			switch test.loadErr {
+			case true:
+				assert.Error(t, err)
+			case false:
+				assert.NoError(t, err)
+				assert.Equal(t, name, provider.Name())
+			}
+		}
 	}
 }

@@ -1,3 +1,5 @@
+// Package providers is used to load all the supported credential providers
+// that can be used to get credentials.
 package providers
 
 import (
@@ -10,12 +12,24 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
-// Providers is a map of configured providers.
-type Providers map[string]types.Provider
+// Providers contains all providers loaded.
+type Providers struct {
+	providers map[string]types.Provider
+}
 
-// Load will load providers from file fn.
-func Load(fn string) (Providers, error) {
-	providers := Providers(map[string]types.Provider{})
+// Get will return the provider with name or error if it doesn't exists.
+func (p *Providers) Get(name string) (types.Provider, error) {
+	provider, ok := p.providers[name]
+	if !ok {
+		return nil, fmt.Errorf("providers: provider %q doesn't exists", name)
+	}
+
+	return provider, nil
+}
+
+// Load will load and create providers from file fn.
+func Load(fn string) (*Providers, error) {
+	providers := map[string]types.Provider{}
 
 	rawProviders, err := loadFile(fn)
 	if err != nil {
@@ -30,7 +44,7 @@ func Load(fn string) (Providers, error) {
 		providers[name] = provider
 	}
 
-	return providers, nil
+	return &Providers{providers: providers}, nil
 }
 
 // loadFile will read from file fn and toml unmarshal it's content.
