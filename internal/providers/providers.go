@@ -35,13 +35,13 @@ func Load(fn string) (*Providers, error) {
 
 	rawProviders, err := loadProviders(fn)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("providers: couldn't load providers. %w", err)
 	}
 
 	for name, data := range rawProviders {
 		provider, err := parseProvider(name, data)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("providers: couldn't parse providers. %w", err)
 		}
 		providers[name] = provider
 	}
@@ -54,14 +54,14 @@ func loadProviders(fn string) (map[string]interface{}, error) {
 	file, err := os.ReadFile(fn)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return nil, fmt.Errorf("providers: providers file %q doesn't exist", fn)
+			return nil, fmt.Errorf("file %q doesn't exist", fn)
 		}
-		return nil, fmt.Errorf("providers: couldn't read providers file %q. %w", fn, err)
+		return nil, fmt.Errorf("couldn't read file %q. %w", fn, err)
 	}
 
 	rawProviders := map[string]interface{}{}
 	if err := toml.Unmarshal(file, &rawProviders); err != nil {
-		return nil, fmt.Errorf("providers: couldn't toml unmarshal file %q. %w", fn, err)
+		return nil, fmt.Errorf("couldn't toml unmarshal file %q. %w", fn, err)
 	}
 
 	return rawProviders, nil
