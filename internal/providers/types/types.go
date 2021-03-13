@@ -1,5 +1,5 @@
-// Package types includes the interfaces that must be satisfied to create an
-// provider that can be used by the provider package.
+// Package types includes the interfaces that must be satisfied to create a
+// provider that can be used by the providers package.
 package types
 
 type Provider interface {
