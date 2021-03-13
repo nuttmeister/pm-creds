@@ -13,7 +13,6 @@ import (
 )
 
 // Create will create a new provider with name based on config and return it.
-// Returns *Provider and error.
 func Create(name string, config map[string]interface{}) (*Provider, error) {
 	creds, err := read(config, "credentials")
 	if err != nil {
@@ -34,7 +33,6 @@ func Create(name string, config map[string]interface{}) (*Provider, error) {
 
 // read will read option from config and return the value as []string. If value is not set nil
 // will be returned. If value is set but isn't a []string nil and error will be returned.
-// Returns []string and error.
 func read(config map[string]interface{}, option string) ([]string, error) {
 	val, exists := config[option]
 	if !exists {
@@ -58,14 +56,12 @@ type Provider struct {
 }
 
 // Name returns the provider name.
-// Returns string.
 func (p *Provider) Name() string {
 	return p.name
 }
 
 // Get will retrieve profile name from provider p. If name is $env the credentials will be
 // retrieved from current environmental variables.
-// Returns *types.Profile and error.
 func (p *Provider) Get(name string) (types.Profile, error) {
 	creds, region := aws.Credentials{}, ""
 	var err error
@@ -98,7 +94,6 @@ func (p *Provider) Get(name string) (types.Profile, error) {
 }
 
 // credsFromFiles will return credentials and region for name from files.
-// Returns aws.Credentials and error.
 func (p *Provider) credsFromFiles(name string) (aws.Credentials, string, error) {
 	opts := func(opts *config.LoadSharedConfigOptions) {
 		opts.CredentialsFiles = p.creds
@@ -122,7 +117,6 @@ func (p *Provider) credsFromFiles(name string) (aws.Credentials, string, error) 
 // 2. Credentials / Config i .aws config. (default or set by AWS_PROFILE/AWS_DEFAULT_PROFILE).
 // 3. ECS Task Definition IAM Role.
 // 4. EC2 IAM Role.
-// Returns aws.Credentials and error.
 func (p *Provider) credsFromDefaultChain() (aws.Credentials, string, error) {
 	ctx := context.Background()
 	def, err := config.LoadDefaultConfig(ctx)
@@ -145,13 +139,11 @@ type Profile struct {
 }
 
 // Name returns the profile name.
-// Returns string.
 func (p *Profile) Name() string {
 	return p.name
 }
 
 // Payload returns the profile json payload.
-// Returns []byte.
 func (p *Profile) Payload() []byte {
 	return p.payload
 }
