@@ -13,15 +13,12 @@ import (
 	"github.com/nuttmeister/pm-creds/internal/providers/types"
 )
 
-// data is used to configure the aws provider.
-type data struct {
-	Credentials []string `mapstructure:"credentials"`
-	Configs     []string `mapstructure:"configs"`
-}
-
 // Create will create a new provider with name based on config and return it.
 func Create(name string, raw map[string]interface{}) (*Provider, error) {
-	data := &data{}
+	data := &struct {
+		Credentials []string `mapstructure:"credentials"`
+		Configs     []string `mapstructure:"configs"`
+	}{}
 	if err := mapstructure.Decode(raw, data); err != nil {
 		return nil, fmt.Errorf("aws: couldn't decode raw to data for %q. %w", name, err)
 	}
