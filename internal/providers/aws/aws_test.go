@@ -3,6 +3,7 @@
 package aws
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -128,4 +129,26 @@ func TestLoad(t *testing.T) {
 			assert.Error(t, err)
 		}
 	}
+}
+
+func TestDefaultChain(t *testing.T) {
+	os.Setenv("AWS_ACCESS_KEY_ID", "def-key")
+	os.Setenv("AWS_SECRET_ACCESS_KEY", "def-secret")
+	os.Setenv("AWS_SESSION_TOKEN", "def-token")
+	os.Setenv("AWS_DEFAULT_REGION", "eu-north-1")
+
+	provider, err := Create("aws-def", map[string]interface{}{})
+	assert.NoError(t, err)
+	assert.Equal(t, "aws-def", provider.Name())
+
+	profile, err := provider.Get("$default")
+	assert.NoError(t, err)
+
+	assert.Equal(t, "$default", profile.Name())
+	assert.Equal(t, []byte(`{"accessKey":"def-key","secretKey":"def-secret","sessionToken":"def-token","region":"eu-north-1"}`), profile.Payload())
+
+	os.Unsetenv("AWS_ACCESS_KEY_ID")
+	os.Unsetenv("AWS_SECRET_ACCESS_KEY")
+	os.Unsetenv("AWS_SESSION_TOKEN")
+	os.Unsetenv("AWS_REGION")
 }
