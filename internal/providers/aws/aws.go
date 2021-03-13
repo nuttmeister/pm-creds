@@ -1,5 +1,5 @@
-// Package aws is an provider that can be used by the provider package to
-// retrieve aws credentials from the credentials and config files.
+// Package aws is a provider that can be used by the providers package to
+// retrieve aws credentials from aws cli credentials and config files.
 package aws
 
 import (
@@ -34,7 +34,7 @@ func Create(name string, config map[string]interface{}) (*Provider, error) {
 }
 
 // read will read option from config and return the value as []string. If value is not set nil
-// will be returned. If value is set but isn't an []string nil and error will be returned.
+// will be returned. If value is set but isn't a []string nil and error will be returned.
 // Returns []string and error.
 func read(config map[string]interface{}, option string) ([]string, error) {
 	val, exists := config[option]
@@ -49,8 +49,8 @@ func read(config map[string]interface{}, option string) ([]string, error) {
 	return slice, nil
 }
 
-// Provider fullfills the types.Provider interface and can be used as
-// an provider by the providers package.
+// Provider satisfies the types.Provider interface and can be used as
+// a provider by the providers package.
 type Provider struct {
 	name string
 
@@ -103,8 +103,8 @@ func (p *Provider) Get(name string) (types.Profile, error) {
 	return &Profile{name: name, payload: payload}, nil
 }
 
-// Profile fullfills the types.Profile interface and can be used
-// as an profile by the providers package.
+// Profile satisfies the types.Profile interface and can be used
+// as a profile by the providers package.
 type Profile struct {
 	name    string
 	payload []byte
@@ -116,7 +116,7 @@ func (p *Profile) Name() string {
 	return p.name
 }
 
-// Payload returns the profile payload as JSON.
+// Payload returns the profile json payload.
 // Returns []byte.
 func (p *Profile) Payload() []byte {
 	return p.payload

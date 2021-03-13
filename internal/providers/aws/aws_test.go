@@ -1,5 +1,5 @@
-// Package aws is an provider that can be used by the provider package to
-// retrieve aws credentials from the credentials and config files.
+// Package aws is a provider that can be used by the providers package to
+// retrieve aws credentials from aws cli credentials and config files.
 package aws
 
 import (
