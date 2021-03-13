@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/nuttmeister/pm-creds/internal/providers/aws"
 	"github.com/nuttmeister/pm-creds/internal/providers/types"
 	"github.com/pelletier/go-toml"
@@ -71,21 +72,18 @@ func parseProvider(name string, data interface{}) (types.Provider, error) {
 		return nil, fmt.Errorf("couldn't read config of provider %q", name)
 	}
 
-	typeRaw, ok := raw["type"]
-	if !ok {
-		return nil, fmt.Errorf("provider %q is missing config option %s", name, "type")
-	}
-
-	typeStr, ok := typeRaw.(string)
-	if !ok {
-		return nil, fmt.Errorf("provider %q has wrong data type for option %s (wanted string got %T)", name, "type", typeRaw)
+	cfg := &struct {
+		Type string `mapstructure:"type"`
+	}{}
+	if err := mapstructure.Decode(raw, cfg); err != nil {
+		return nil, fmt.Errorf("couldn't decode field %s from data for %q. %w", "type", name, err)
 	}
 
 	// Add more providers that satisfies the Provider interface here.
-	switch strings.ToLower(typeStr) {
+	switch strings.ToLower(cfg.Type) {
 	case "aws":
 		return aws.Create(name, raw)
 	}
 
-	return nil, fmt.Errorf("provider %q has an invalid %q", typeStr, "type")
+	return nil, fmt.Errorf("provider %q has an invalid %q", cfg.Type, "type")
 }
