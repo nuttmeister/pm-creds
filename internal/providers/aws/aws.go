@@ -12,8 +12,6 @@ import (
 	"github.com/nuttmeister/pm-creds/internal/providers/types"
 )
 
-const providerType = "aws"
-
 // Create will create a new provider with name based on config and return it.
 // Returns *Provider and error.
 func Create(name string, config map[string]interface{}) (*Provider, error) {
@@ -63,12 +61,6 @@ type Provider struct {
 // Returns string.
 func (p *Provider) Name() string {
 	return p.name
-}
-
-// Type returns the provider type.
-// Returns string.
-func (p *Provider) Type() string {
-	return providerType
 }
 
 // Get will retrieve profile name from provider p. If name is $env the credentials will be

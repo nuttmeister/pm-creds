@@ -9,12 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type profileTest struct {
-}
-
 var tests = []struct {
 	name          string
-	provType      string
 	config        map[string]interface{}
 	result        *Provider
 	profiles      map[string]*Profile
@@ -22,8 +18,7 @@ var tests = []struct {
 	err           bool
 }{
 	{
-		name:     "aws1",
-		provType: "aws",
+		name: "aws1",
 		config: map[string]interface{}{
 			"credentials": []string{"./testdata/credentials"},
 		},
@@ -53,8 +48,7 @@ var tests = []struct {
 		err:           false,
 	},
 	{
-		name:     "aws2",
-		provType: "aws",
+		name: "aws2",
 		config: map[string]interface{}{
 			"credentials": []string{"./testdata/credentials"},
 			"configs":     []string{"./testdata/configs"},
@@ -114,7 +108,6 @@ func TestLoad(t *testing.T) {
 
 		assert.Equal(t, test.result, provider)
 		assert.Equal(t, test.name, provider.Name())
-		assert.Equal(t, test.provType, provider.Type())
 
 		for name, res := range test.profiles {
 			profile, err := provider.Get(name)
