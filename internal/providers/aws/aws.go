@@ -16,12 +16,12 @@ const providerType = "aws"
 // Create will create a new provider with name based on config and return it.
 // Returns *Provider and error.
 func Create(name string, config map[string]interface{}) (*Provider, error) {
-	creds, err := read(config, "credentials", nil)
+	creds, err := read(config, "credentials")
 	if err != nil {
 		return nil, fmt.Errorf("aws: error creating provider %q. %w", name, err)
 	}
 
-	configs, err := read(config, "configs", nil)
+	configs, err := read(config, "configs")
 	if err != nil {
 		return nil, fmt.Errorf("aws: error creating provider %q. %w", name, err)
 	}
@@ -33,14 +33,13 @@ func Create(name string, config map[string]interface{}) (*Provider, error) {
 	}, nil
 }
 
-// read will read option from config and return the value as []string.
-// If value is not set def will be returned. If value is set but isn't
-// an []string nil and error will be returned.
+// read will read option from config and return the value as []string. If value is not set nil
+// will be returned. If value is set but isn't an []string nil and error will be returned.
 // Returns []string and error.
-func read(config map[string]interface{}, option string, def []string) ([]string, error) {
+func read(config map[string]interface{}, option string) ([]string, error) {
 	val, exists := config[option]
 	if !exists {
-		return def, nil
+		return nil, nil
 	}
 	slice, ok := val.([]string)
 	if !ok {
