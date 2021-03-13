@@ -79,7 +79,12 @@ func (p *Provider) Get(name string) (types.Profile, error) {
 		return nil, fmt.Errorf("aws: couldn't get credentials for %q from %q. %w", name, p.Name(), err)
 	}
 
-	creds := &credentials{
+	creds := &struct {
+		AccessKey    string `json:"accessKey"`
+		SecretKey    string `json:"secretKey"`
+		SessionToken string `json:"sessionToken,omitempty"`
+		Region       string `json:"region,omitempty"`
+	}{
 		AccessKey:    shared.Credentials.AccessKeyID,
 		SecretKey:    shared.Credentials.SecretAccessKey,
 		SessionToken: shared.Credentials.SessionToken,
@@ -102,11 +107,4 @@ func (p *Profile) Name() string {
 
 func (p *Profile) Payload() []byte {
 	return p.payload
-}
-
-type credentials struct {
-	AccessKey    string `json:"accessKey"`
-	SecretKey    string `json:"secretKey"`
-	SessionToken string `json:"sessionToken,omitempty"`
-	Region       string `json:"region,omitempty"`
 }
