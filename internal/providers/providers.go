@@ -66,26 +66,26 @@ func loadFile(fn string) (map[string]interface{}, error) {
 // required for it to be created. It will also call the corrept provider package
 // depending on what type was set in the data provided.
 func parseProvider(name string, data interface{}) (types.Provider, error) {
-	config, ok := data.(map[string]interface{})
+	raw, ok := data.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("couldn't read config data in provider %q", name)
+		return nil, fmt.Errorf("couldn't read config of provider %q", name)
 	}
 
-	raw, ok := config["type"]
+	typeRaw, ok := raw["type"]
 	if !ok {
-		return nil, fmt.Errorf("provider %q is missing config option type", name)
+		return nil, fmt.Errorf("provider %q is missing config option %s", name, "type")
 	}
 
-	provType, ok := raw.(string)
+	typeStr, ok := typeRaw.(string)
 	if !ok {
-		return nil, fmt.Errorf("provider %q has wrong data type for value type", name)
+		return nil, fmt.Errorf("provider %q has wrong data type for option %s (wanted string got %T)", name, "type", typeRaw)
 	}
 
 	// Add more providers that satisfies the Provider interface here.
-	switch strings.ToLower(provType) {
+	switch strings.ToLower(typeStr) {
 	case "aws":
-		return aws.Create(name, config)
+		return aws.Create(name, raw)
 	}
 
-	return nil, fmt.Errorf("provider type %q is not valid", provType)
+	return nil, fmt.Errorf("provider %q has an invalid %q", typeStr, "type")
 }
