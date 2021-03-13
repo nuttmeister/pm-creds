@@ -4,7 +4,6 @@ package types
 
 type Provider interface {
 	Name() string
-	Type() string
 	Get(name string) (Profile, error)
 }
 
