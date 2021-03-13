@@ -9,48 +9,28 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/mitchellh/mapstructure"
 	"github.com/nuttmeister/pm-creds/internal/providers/types"
 )
 
-// Create will create a new provider with name based on config and return it.
-func Create(name string, config map[string]interface{}) (*Provider, error) {
-	creds, err := read(config, "credentials")
-	if err != nil {
-		return nil, fmt.Errorf("aws: error creating provider %q. %w", name, err)
-	}
+// data is used to configure the aws provider.
+type data struct {
+	Credentials []string `mapstructure:"credentials"`
+	Configs     []string `mapstructure:"configs"`
+}
 
-	configs, err := read(config, "configs")
-	if err != nil {
-		return nil, fmt.Errorf("aws: error creating provider %q. %w", name, err)
+// Create will create a new provider with name based on config and return it.
+func Create(name string, raw map[string]interface{}) (*Provider, error) {
+	data := &data{}
+	if err := mapstructure.Decode(raw, data); err != nil {
+		return nil, fmt.Errorf("aws: couldn't decode raw to data for %q. %w", name, err)
 	}
 
 	return &Provider{
 		name:    name,
-		creds:   creds,
-		configs: configs,
+		creds:   data.Credentials,
+		configs: data.Configs,
 	}, nil
-}
-
-// read will read option from config and return the value as []string. If value is not set nil
-// will be returned. If value is set but isn't a []string nil and error will be returned.
-func read(config map[string]interface{}, option string) ([]string, error) {
-	val, exists := config[option]
-	if !exists {
-		return nil, nil
-	}
-	slice := []string{}
-	switch val.(type) {
-	case []string:
-		slice = val.([]string)
-	case []interface{}:
-		for _, row := range val.([]interface{}) {
-			slice = append(slice, fmt.Sprintf("%v", row))
-		}
-	default:
-		return nil, fmt.Errorf("wrong type for option %q (expected array of strings but got %T)", option, val)
-	}
-
-	return slice, nil
 }
 
 // Provider satisfies the types.Provider interface and can be used as
