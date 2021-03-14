@@ -1,7 +1,6 @@
 package server
 
 import (
-	"bufio"
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
@@ -16,8 +15,6 @@ import (
 )
 
 const listen = "localhost:%d"
-
-var console = bufio.NewReader(os.Stdin)
 
 // config contains the basic configuration for the http server and it's handler.
 type config struct {
