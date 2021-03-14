@@ -133,9 +133,22 @@ pm.sendRequest({
 
 ## Usage
 
+```text
+pm-creds --help
+Usage of pm-creds:
+  --config-dir string
+        Location of the config files (default "/home/user/.pm-creds")
+  --create-certs
+        If certificates should be generated
+  --create-config
+        If the default config should be created
+  --overwrite
+        If new config/certificates should overwrite old
+```
+
 ### Start proxy
 
-Run `pm-creds`.
+Running `pm-creds` with no options will load config and providers form the standard config directory `~/.pm-creds/`.
 
 ### Run Postman Request
 
