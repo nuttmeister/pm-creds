@@ -22,4 +22,5 @@ for BUILD in ${BUILD_FOR}; do
 	
 	GOOS=${GOOS} GOARCH=${GOARCH} go build -o ../${TMP_DIR}/${FILENAME}
 	zip -j ../${DIST_DIR}/${ZIPNAME} ../${TMP_DIR}/${FILENAME}
+	rm ../${TMP_DIR}/${FILENAME}
 done
