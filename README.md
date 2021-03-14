@@ -15,7 +15,7 @@ Currently the following providers are fully supported.
 ## Gettings started
 
 We recommend you download one of the pre-built binaries.  
-You will find them for `macOS`, `linux` and `windows` under [releases](/releases).
+You will find them for `macOS`, `linux` and `windows` under [releases](https://github.com/nuttmeister/pm-creds/releases).
 
 ### Building
 
