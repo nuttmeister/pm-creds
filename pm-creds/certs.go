@@ -42,6 +42,5 @@ func createCertificates(createCerts bool, overwrite bool) {
 			"generated %q, %q, %q, %q. please setup pm-creds and postman with these%s",
 			caKeyFile, caCertFile, serverKeyFile, serverCertFile, logging.Lb(),
 		)
-		os.Exit(0)
 	}
 }

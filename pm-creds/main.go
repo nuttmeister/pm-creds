@@ -26,6 +26,9 @@ func main() {
 
 	createCertificates(createCerts, overwrite)
 	createConfiguration(createConfig, overwrite)
+	if createCerts || createConfig {
+		os.Exit(0)
+	}
 
 	providers, err := providers.Load(cfgDir)
 	if err != nil {
