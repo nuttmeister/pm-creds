@@ -50,6 +50,22 @@ pm-creds --create-config --create-certs
 If you config and / or certificates are broken for some reason you can add the flag `--overwrite`
 and `--create-config` and/or `--create-certs` will allow you to overwrite the already existing files.
 
+#### Adding an provider
+
+Before you can use `pm-creds` you will need to add an provider! Currently only AWS is supported and it must be added to the `~/.pm-creds/providers.toml` file (or `\Users\username\.pm-creds\providers.toml` on windows) as follows.
+
+```toml
+[name]
+type = "provider-type"
+```
+
+So for aws the following would suffice in most cases.
+
+```toml
+[aws]
+type = "aws"
+```
+
 #### Running
 
 To run the proxy just start it with `pm-creds` and wait for it to start listening.  
