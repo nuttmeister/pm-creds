@@ -19,6 +19,11 @@ var (
 
 // ServerHTTP is used to deliver credentials.
 func (cfg *config) ServerHTTP(w http.ResponseWriter, r *http.Request) {
+	// Just check if console is locked by waiting for
+	// input and directly unlock it again.
+	consoleMu.Lock()
+	consoleMu.Unlock()
+
 	remote := fmt.Sprintf("%q (%s)", r.RemoteAddr, r.UserAgent())
 
 	if r.Method != "POST" {
