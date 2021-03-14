@@ -17,12 +17,13 @@ var (
 	red    = color.New(color.FgRed)
 	yellow = color.New(color.FgYellow)
 	green  = color.New(color.FgGreen)
+	rt     = runtime.GOOS
 )
 
-// Will return \n except if runtime.GOOS is
+// Will return \n except if rt is
 // windows. Then returns \r\n.
 func Lb() string {
-	if runtime.GOOS == "windows" {
+	if rt == "windows" {
 		return "\r\n"
 	}
 	return "\n"
@@ -75,8 +76,7 @@ func (l *Logger) Error(err error) {
 // print will read from l.messages and print to l.stdOut.
 func (l *Logger) print() {
 	for {
-		msg := <-l.messages
-		fmt.Fprint(l.stdOut, msg)
+		fmt.Fprint(l.stdOut, <-l.messages)
 	}
 }
 
