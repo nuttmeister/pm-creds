@@ -19,8 +19,6 @@ var (
 
 // ServerHTTP is used to deliver credentials.
 func (cfg *config) ServerHTTP(w http.ResponseWriter, r *http.Request) {
-	// Just check if console is locked by waiting for
-	// input and directly unlock it again.
 	consoleMu.Lock()
 	consoleMu.Unlock()
 
@@ -40,7 +38,6 @@ func (cfg *config) ServerHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	providerName, profileName := path[0], path[1]
 
-	// Deny profile if it matches deny slice.
 	if match(profileName, cfg.Deny) {
 		write(w, 400, "text/plain", []byte(fmt.Sprintf("profile %q has been denied", profileName)))
 		cfg.logger.Warning("profile %q has been denied for %s%s", profileName, remote, logging.Lb())
@@ -61,7 +58,20 @@ func (cfg *config) ServerHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Skip prompt if profile matches auto-approve slice.
+	// auto-approve or ask for approval.
+	switch cfg.approve(w, profileName, providerName, remote) {
+	case true:
+		write(w, 200, "application/json", profile.Payload())
+
+	case false:
+		write(w, 401, "text/plain", []byte(fmt.Sprintf("authorization to use %q (%s) denied", profileName, providerName)))
+		cfg.logger.Warning("denied credentials for %q (%s) %s%s", profileName, providerName, remote, logging.Lb())
+	}
+}
+
+// approve will evaluate if the request should be automatically approved or ask for
+// user approval through the console. returns true if request is approved.
+func (cfg *config) approve(w http.ResponseWriter, profileName string, providerName string, remote string) bool {
 	switch match(profileName, cfg.AutoApprove) {
 	case false:
 		consoleMu.Lock()
@@ -79,17 +89,17 @@ func (cfg *config) ServerHTTP(w http.ResponseWriter, r *http.Request) {
 		text, _ := console.ReadString('\n')
 
 		if strings.ToLower(strings.Replace(text, logging.Lb(), "", -1)) != "y" {
-			write(w, 401, "text/plain", []byte(fmt.Sprintf("authorization to use %q (%s) denied", profileName, providerName)))
-			cfg.logger.Warning("denied credentials for %q (%s) %s%s", profileName, providerName, remote, logging.Lb())
-			return
+			return false
 		}
+
 		cfg.logger.Notice("approved credentials for %q (%s) %s%s", profileName, providerName, remote, logging.Lb())
+		return true
 
 	case true:
 		cfg.logger.Notice("auto-approved credentials for %q (%s) %s%s", profileName, providerName, remote, logging.Lb())
+		return true
 	}
-
-	write(w, 200, "application/json", profile.Payload())
+	return false
 }
 
 // write will write body to w with content-type ct and status code status.
