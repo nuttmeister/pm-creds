@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/mattn/go-colorable"
 )
 
 const dateFormat = "2006-01-02 15:04:05"
@@ -37,8 +38,8 @@ type Logger struct {
 func New() *Logger {
 	logger := &Logger{
 		messages: make(chan string),
-		stdOut:   os.Stdout,
-		stdErr:   os.Stderr,
+		stdOut:   colorable.NewColorable(os.Stdout),
+		stdErr:   colorable.NewColorable(os.Stderr),
 	}
 	go logger.print()
 
