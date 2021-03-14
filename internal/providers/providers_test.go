@@ -7,45 +7,45 @@ import (
 )
 
 var tests = []struct {
-	file    string
+	cfgDir  string
 	load    []string
 	err     bool
 	loadErr bool
 }{
 	{
-		file: "./testdata/providers.toml",
-		load: []string{"aws-full", "aws-credentials", "aws-configs", "aws-default"},
+		cfgDir: "./testdata/working",
+		load:   []string{"aws-full", "aws-credentials", "aws-configs", "aws-default"},
 	},
 	{
-		file:    "./testdata/providers.toml",
+		cfgDir:  "./testdata/working",
 		load:    []string{"no-exists"},
 		loadErr: true,
 	},
 	{
-		file: "./testdata/no-file.toml",
-		err:  true,
+		cfgDir: "./testdata/no-dir",
+		err:    true,
 	},
 	{
-		file: "./testdata/error.toml",
-		err:  true,
+		cfgDir: "./testdata/error",
+		err:    true,
 	},
 	{
-		file: "./testdata/error-no-type.toml",
-		err:  true,
+		cfgDir: "./testdata/error-no-type",
+		err:    true,
 	},
 	{
-		file: "./testdata/error-type.toml",
-		err:  true,
+		cfgDir: "./testdata/error-type",
+		err:    true,
 	},
 	{
-		file: "./testdata/error-wrong-type.toml",
-		err:  true,
+		cfgDir: "./testdata/error-wrong-type",
+		err:    true,
 	},
 }
 
 func TestLoad(t *testing.T) {
 	for _, test := range tests {
-		providers, err := Load(test.file)
+		providers, err := Load(test.cfgDir)
 		switch test.err {
 		case true:
 			assert.Error(t, err)

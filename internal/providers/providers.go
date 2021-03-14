@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/nuttmeister/pm-creds/internal/paths"
 	"github.com/nuttmeister/pm-creds/internal/providers/aws"
 	"github.com/nuttmeister/pm-creds/internal/providers/types"
 	"github.com/pelletier/go-toml"
@@ -29,11 +30,11 @@ func (p *Providers) Get(name string) (types.Provider, error) {
 	return provider, nil
 }
 
-// Load will load and create providers from file fn.
-func Load(fn string) (*Providers, error) {
+// Load will load and create providers from config directory cfgDir.
+func Load(cfgDir string) (*Providers, error) {
 	providers := map[string]types.Provider{}
 
-	rawProviders, err := loadProviders(fn)
+	rawProviders, err := loadProviders(cfgDir)
 	if err != nil {
 		return nil, fmt.Errorf("providers: couldn't load providers. %w", err)
 	}
@@ -50,7 +51,9 @@ func Load(fn string) (*Providers, error) {
 }
 
 // loadProviders will read providers from file fn and toml unmarshal it's content.
-func loadProviders(fn string) (map[string]interface{}, error) {
+func loadProviders(cfgDir string) (map[string]interface{}, error) {
+	fn := paths.ProvidersFile(cfgDir)
+
 	file, err := os.ReadFile(fn)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
