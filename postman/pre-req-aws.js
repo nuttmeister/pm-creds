@@ -4,7 +4,7 @@ if (!profile) {
 }
 
 pm.sendRequest({
-    url: `https://localhost:9999/${profile}`,
+    url: `https://localhost:9999/aws/${profile}`,
     method: "POST",
     }, function (_, response) {
         if (response.status == "OK") {
