@@ -29,7 +29,6 @@ type config struct {
 
 	providers *providers.Providers
 	logger    *logging.Logger
-	console   chan string
 }
 
 // Start will start the http server using config file fn and providers.
@@ -40,7 +39,6 @@ func Start(fn string, providers *providers.Providers, logger *logging.Logger) er
 	}
 	cfg.providers = providers
 	cfg.logger = logger
-	cfg.console = make(chan string)
 
 	ca, err := caPool(cfg.CaCertificate)
 	if err != nil {
