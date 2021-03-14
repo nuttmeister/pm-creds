@@ -10,6 +10,7 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/nuttmeister/pm-creds/internal/logging"
+	"github.com/nuttmeister/pm-creds/internal/paths"
 	"github.com/nuttmeister/pm-creds/internal/providers"
 	"github.com/pelletier/go-toml"
 )
@@ -18,10 +19,11 @@ const listen = "localhost:%d"
 
 // config contains the basic configuration for the http server and it's handler.
 type config struct {
-	Certificate   string `mapstructure:"certificate"`
-	Key           string `mapstructure:"key"`
-	CaCertificate string `mapstructure:"ca-certificate"`
-	Port          int    `mapstructure:"port"`
+	certificate   string
+	key           string
+	caCertificate string
+
+	Port int `mapstructure:"port"`
 
 	AutoApprove []string `mapstructure:"profiles-approve"`
 	Warn        []string `mapstructure:"profiles-warn"`
@@ -31,16 +33,16 @@ type config struct {
 	logger    *logging.Logger
 }
 
-// Start will start the http server using config file fn and providers.
-func Start(fn string, providers *providers.Providers, logger *logging.Logger) error {
-	cfg, err := loadConfig(fn)
+// Start will start the http server using config file in cfgDir and providers.
+func Start(cfgDir string, providers *providers.Providers, logger *logging.Logger) error {
+	cfg, err := loadConfig(cfgDir)
 	if err != nil {
 		return fmt.Errorf("server: couldn't load config. %w", err)
 	}
 	cfg.providers = providers
 	cfg.logger = logger
 
-	ca, err := caPool(cfg.CaCertificate)
+	ca, err := caPool(cfg.caCertificate)
 	if err != nil {
 		return fmt.Errorf("server: couldn't create ca pool. %w", err)
 	}
@@ -55,7 +57,7 @@ func Start(fn string, providers *providers.Providers, logger *logging.Logger) er
 	}
 
 	cfg.logger.Print("starting listening on https://%s%s", fmt.Sprintf(listen, cfg.Port), logging.Lb())
-	if err := server.ListenAndServeTLS(cfg.Certificate, cfg.Key); err != nil {
+	if err := server.ListenAndServeTLS(cfg.certificate, cfg.key); err != nil {
 		return fmt.Errorf("server: http server error. %w", err)
 	}
 
@@ -81,11 +83,13 @@ func caPool(fn string) (*x509.CertPool, error) {
 }
 
 // loadConfig will read from file fn and toml unmarshal it's content into config.
-func loadConfig(fn string) (*config, error) {
+func loadConfig(cfgDir string) (*config, error) {
+	fn := paths.ConfigFile(cfgDir)
+
 	file, err := os.ReadFile(fn)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return nil, fmt.Errorf("file %q doesn't exist", fn)
+			return nil, fmt.Errorf("file %q doesn't exist. use --create-config to create default config", fn)
 		}
 		return nil, fmt.Errorf("couldn't read file %q. %w", fn, err)
 	}
@@ -99,6 +103,11 @@ func loadConfig(fn string) (*config, error) {
 	if err := mapstructure.Decode(raw, cfg); err != nil {
 		return nil, fmt.Errorf("couldn't decode raw to config for %q. %w", fn, err)
 	}
+
+	// Set certificates.
+	cfg.caCertificate = paths.CaCertFile(cfgDir)
+	cfg.key = paths.ServerKeyFile(cfgDir)
+	cfg.certificate = paths.ServerCertFile(cfgDir)
 
 	return cfg, nil
 }
