@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/fatih/color"
@@ -16,6 +17,15 @@ var (
 	yellow = color.New(color.FgYellow)
 	green  = color.New(color.FgGreen)
 )
+
+// Will return \n except if runtime.GOOS is
+// windows. Then returns \r\n.
+func Lb() string {
+	if runtime.GOOS == "windows" {
+		return "\r\n"
+	}
+	return "\n"
+}
 
 type Logger struct {
 	messages chan string
@@ -57,7 +67,7 @@ func (l *Logger) Alert(format string, a ...interface{}) {
 
 // Error will print message with format and prefix of current date and time and then exit 1.
 func (l *Logger) Error(err error) {
-	fmt.Fprintf(l.stdErr, "%s: %s", now(), fmt.Sprintf("%s\n", err.Error()))
+	fmt.Fprintf(l.stdErr, "%s: %s", now(), fmt.Sprintf("%s%s", err.Error(), Lb()))
 	os.Exit(1)
 }
 
