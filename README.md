@@ -12,7 +12,7 @@ Currently the following providers are fully supported.
 
 |Provider|Method|Comment|
 |-|-|-|
-|AWS|~/.aws/credentials, config|Supports permanent and temporary profiles stored in the credentials file. As well as fetching using default provider chain with profile name $default.|
+|AWS|redentials+config files or default evaluation chain|Supports permanent and temporary profiles stored in the credentials file. As well as fetching using default provider chain with profile name $default.|
 
 ## Installation
 
