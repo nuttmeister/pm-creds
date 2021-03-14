@@ -57,7 +57,7 @@ func loadProviders(cfgDir string) (map[string]interface{}, error) {
 	file, err := os.ReadFile(fn)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return nil, fmt.Errorf("file %q doesn't exist", fn)
+			return nil, fmt.Errorf("file %q doesn't exist. use --create-config to create default providers", fn)
 		}
 		return nil, fmt.Errorf("couldn't read file %q. %w", fn, err)
 	}
