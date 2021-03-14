@@ -1,0 +1,3 @@
+port             = 9999
+profiles-warn    = [ "-prod", "-production", "prod-", "production-" ]
+profiles-approve = [ "-dev", "development", "dev-", "development-" ]

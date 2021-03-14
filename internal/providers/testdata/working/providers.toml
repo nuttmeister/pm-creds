@@ -1,0 +1,15 @@
+[aws-full]
+type = "aws"
+credentials = [ "./aws/testdata/credentials" ]
+configs = [ "./aws/testdata/configs" ]
+
+[aws-credentials]
+type = "aws"
+credentials = [ "./aws/testdata/credentials" ]
+
+[aws-configs]
+type = "aws"
+configs = [ "./aws/testdata/configs" ]
+
+[aws-default]
+type = "aws"
