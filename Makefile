@@ -7,3 +7,4 @@ build:
 
 clean:
 	rm -rf ./tmp
+	rm -rf ./dist
