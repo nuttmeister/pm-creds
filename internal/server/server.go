@@ -56,7 +56,7 @@ func Start(fn string, providers *providers.Providers, logger *logging.Logger) er
 		},
 	}
 
-	cfg.logger.Print("starting listening on https://%s\n", fmt.Sprintf(listen, cfg.Port))
+	cfg.logger.Print("starting listening on https://%s%s", fmt.Sprintf(listen, cfg.Port), logging.Lb())
 	if err := server.ListenAndServeTLS(cfg.Certificate, cfg.Key); err != nil {
 		return fmt.Errorf("server: http server error. %w", err)
 	}
