@@ -29,4 +29,4 @@ fi
 
 rm -rf pm-creds
 
-cd ../../
+cd ../..
