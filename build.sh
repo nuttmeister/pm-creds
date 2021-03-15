@@ -24,6 +24,15 @@ if [ "${GOOS}" = "darwin" ]; then
 	codesign --verify --verbose pm-creds
 	ditto -c -k --keepParent --rsrc pm-creds ${FILENAME}.zip
 	xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds.zip" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ${FILENAME}.zip
+elif [ "${GOOS}" = "windows" ]; then
+	# npm install --save-dev signcode
+	# ./node_modules/signcode/cli.js sign ${FILENAME}.exe \
+	# 	--cert cert-win.p12 \
+	# 	--password ${WIN_PASSWORD} \
+	# 	--name 'pm-creds' \
+	# 	--url 'https://github.com/nuttmeister/pm-creds'
+	# signcode verify ${FILENAME}.exe
+	ditto -c -k --keepParent --rsrc pm-creds.exe ${FILENAME}.zip
 else
 	ditto -c -k --keepParent --rsrc pm-creds ${FILENAME}.zip
 fi
