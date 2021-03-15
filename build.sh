@@ -13,7 +13,7 @@ FILENAME="pm-creds-${TAG}-${FRIENDLY}-${GOOS}"
 GOOS=${GOOS} GOARCH=${GOARCH} go build -o ../dist/${FILENAME}/pm-creds
 if [ "${GOOS}" = "darwin" ]; then
 	codesign --force -s "${AC_APPID}" --timestamp ../dist/${FILENAME}/pm-creds
-	codesign -v ../dist/${FILENAME}/pm-creds
+	codesign --verify --verbose ../dist/${FILENAME}/pm-creds
 fi
 
 zip -j ../dist/${FILENAME}.zip ../dist/${FILENAME}/pm-creds
