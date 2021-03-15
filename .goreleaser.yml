@@ -18,7 +18,7 @@ builds:
       - "amd64"
     hooks:
       post:
-        - cmd: 'codesign -s "$(security find-identity -v | grep "1)" | cut -d\" -f 2)" --timestamp ./dist/pm-creds-macos-amd64_darwin_amd64/pm-creds'
+        - cmd: 'codesign -s "{{.Env.AC_APPID}}" --timestamp ./dist/pm-creds-macos-amd64_darwin_amd64/pm-creds -v'
 
   - binary: "pm-creds"
     id: "pm-creds-macos-arm64"
@@ -29,13 +29,11 @@ builds:
       - "arm64"
     hooks:
       post:
-        - cmd: 'codesign -s "$(security find-identity -v | grep "1)" | cut -d\" -f 2)" --timestamp ./dist/pm-creds-macos-arm64_darwin_arm64/pm-creds'
+        - cmd: 'codesign -s "{{.Env.AC_APPID}}" --timestamp ./dist/pm-creds-macos-arm64_darwin_arm64/pm-creds -v'
 
 archives:
   - id: "pm-creds"
     format: "zip"
-    wrap_in_directory: "true"
-    files:
     replacements:
       amd64: "x64"
       386: "x86"
