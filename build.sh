@@ -21,7 +21,7 @@ cd ../dist/${FILENAME}
 
 if [ "${GOOS}" = "darwin" ]; then
 	codesign --deep --force -s "${AC_APPID}" --timestamp pm-creds
-	codesign --verify --verbose ${FILENAME}/pm-creds
+	codesign --verify --verbose pm-creds
 	ditto -c -k --keepParent --rsrc pm-creds ${FILENAME}.zip
 	xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds.zip" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ${FILENAME}.zip
 else
