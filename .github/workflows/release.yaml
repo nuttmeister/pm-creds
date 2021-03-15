@@ -36,13 +36,13 @@ jobs:
       - name: "build"
         run: |
           mkdir -p dist
-          ../build.sh darwin arm64
-          ../build.sh darwin amd64
-          ../build.sh linux arm64
-          ../build.sh linux amd64
-          ../build.sh linux 386
-          ../build.sh windows amd64
-          ../build.sh windows 386
+          ./build.sh darwin arm64
+          ./build.sh darwin amd64
+          ./build.sh linux arm64
+          ./build.sh linux amd64
+          ./build.sh linux 386
+          ./build.sh windows amd64
+          ./build.sh windows 386
         env:
           TAG: "${{ github.event.release.tag_name }}"
           AC_APPID: "${{ secrets.AC_APPID }}"
