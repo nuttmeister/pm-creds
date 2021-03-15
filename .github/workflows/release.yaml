@@ -36,7 +36,6 @@ jobs:
       - name: "build"
         run: |
           mkdir -p dist
-          cd pm-creds
           ../build.sh darwin arm64
           ../build.sh darwin amd64
           ../build.sh linux arm64
