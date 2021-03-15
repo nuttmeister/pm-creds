@@ -37,6 +37,7 @@ jobs:
         uses: "goreleaser/goreleaser-action@v2"
         with:
           version: "latest"
+          args: "release"
         env:
           AC_APPID: "${{ secrets.AC_APPID }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
