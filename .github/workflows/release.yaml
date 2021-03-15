@@ -37,13 +37,13 @@ jobs:
         run: |
           mkdir -p dist
           cd pm-creds
-          ./build.sh darwin arm64
-          ./build.sh darwin amd64
-          ./build.sh linux arm64
-          ./build.sh linux amd64
-          ./build.sh linux 386
-          ./build.sh windows amd64
-          ./build.sh windows 386
+          ../build.sh darwin arm64
+          ../build.sh darwin amd64
+          ../build.sh linux arm64
+          ../build.sh linux amd64
+          ../build.sh linux 386
+          ../build.sh windows amd64
+          ../build.sh windows 386
         env:
           TAG: "${{ github.event.ref }}"
           AC_APPID: "${{ secrets.AC_APPID }}"
