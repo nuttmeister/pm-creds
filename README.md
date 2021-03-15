@@ -1,5 +1,8 @@
 # pm-creds
 
+[![codeql](https://github.com/nuttmeister/pm-creds/actions/workflows/codeql.yaml/badge.svg?branch=master)](https://github.com/nuttmeister/pm-creds/actions/workflows/codeql.yaml)
+[![release](https://github.com/nuttmeister/pm-creds/actions/workflows/release.yaml/badge.svg)](https://github.com/nuttmeister/pm-creds/actions/workflows/release.yaml)
+
 pm-creds is a middle-ware between Postman and your credentials provider and securely sets your credentials as environmental variables on your requests or collections.
 
 
