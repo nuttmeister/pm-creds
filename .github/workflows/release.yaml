@@ -19,15 +19,32 @@ jobs:
         uses: "actions/setup-go@v2"
         with:
           go-version: "1.16"
+      - name: "setup macos cert"
+        run: |
+          CERTIFICATE=cert.p12
+          echo ${AC_CERTIFICATE} | base64 --decode > $CERTIFICATE
+          KEY_CHAIN=build.keychain
+          security create-keychain -p actions ${KEY_CHAIN}
+          security default-keychain -s ${KEY_CHAIN}
+          security unlock-keychain -p actions ${KEY_CHAIN}
+          security import ${CERTIFICATE} -k ${KEY_CHAIN} -P ${AC_CERTIFICATE_PASSWORD} -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k actions ${KEY_CHAIN}
+          rm -rf ${CERTIFICATE}
+        env:
+          AC_CERTIFICATE: "${{ secrets.AC_CERTIFICATE }}"
+          AC_CERTIFICATE_PASSWORD: "${{ secrets.AC_CERTIFICATE_PASSWORD }}"
       - name: "releaser"
         uses: "goreleaser/goreleaser-action@v2"
         with:
           version: "latest"
           args: "release --rm-dist"
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           AC_APPID: "${{ secrets.AC_APPID }}"
-      - name: "notarize"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "notarize macos app"
         run: |
-          xcrun altool --notarize-app --primary-bundle-id 'se.execit.pm-creds' -u '${{ secrets.AC_USERNAME }}' -p '${{ secrets.AC_PASSWORD }}' -t osx -f ./dist/pm-creds_*_macOS_amd64.zip
-          xcrun altool --notarize-app --primary-bundle-id 'se.execit.pm-creds' -u '${{ secrets.AC_USERNAME }}' -p '${{ secrets.AC_PASSWORD }}' -t osx -f ./dist/pm-creds_*_macOS_arm64.zip
+          xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ./dist/pm-creds_*_macOS_amd64.zip
+          xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ./dist/pm-creds_*_macOS_arm64.zip
+        env:
+          AC_USERNAME: "${{ secrets.AC_USERNAME }}"
+          AC_PASSWORD: "${{ secrets.AC_PASSWORD }}"
