@@ -2,6 +2,7 @@
 set -e
 GOOS=${1}
 GOARCH=${2}
+TAG=$(git tag --points-at HEAD)
 
 FRIENDLY=${GOOS}
 if [ ${FRIENDLY} = "darwin" ]; then
