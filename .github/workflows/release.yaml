@@ -43,10 +43,10 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "notarize macos app"
         run: |
-          xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ./dist/pm-creds_*_macOS_amd64.zip
-          xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ./dist/pm-creds_*_macOS_arm64.zip
+          xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ./pm-creds/dist/pm-creds_*_macOS_amd64.zip
+          xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ./pm-creds/dist/pm-creds_*_macOS_arm64.zip
         env:
           AC_USERNAME: "${{ secrets.AC_USERNAME }}"
           AC_PASSWORD: "${{ secrets.AC_PASSWORD }}"
       - name: "clean dist"
-        run: "rm -rf ./dist"
+        run: "rm -rf ./pm-creds/dist"
