@@ -9,7 +9,7 @@ if [ ${FRIENDLY} = "darwin" ]; then
 	FRIENDLY=macOS
 fi
 
-FILENAME="pm-creds-${TAG}-${FRIENDLY}-${GOOS}"
+FILENAME="pm-creds-${TAG}-${FRIENDLY}-${GOARCH}"
 
 # Build
 mkdir -p dist/${FILENAME}
