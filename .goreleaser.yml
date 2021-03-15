@@ -1,0 +1,43 @@
+builds:
+  - binary: "pm-creds"
+    id: "pm-creds"
+    main: "./pm-creds"
+    goos:
+      - "windows"
+      - "linux"
+    goarch:
+      - "amd64"
+      - "386"
+
+  - binary: "pm-creds"
+    id: "pm-creds-macos-amd64"
+    main: "./pm-creds"
+    goos:
+      - "darwin"
+    goarch:
+      - "amd64"
+    hooks:
+      post:
+        - cmd: 'codesign -s "{{.Env.AC_APPID}}" --timestamp ./dist/pm-creds-macos-amd64_darwin_amd64/pm-creds'
+
+  - binary: "pm-creds"
+    id: "pm-creds-macos-arm64"
+    main: "./pm-creds"
+    goos:
+      - "darwin"
+    goarch:
+      - "arm64"
+    hooks:
+      post:
+        - cmd: 'codesign -s "{{.Env.AC_APPID}}" --timestamp ./dist/pm-creds-macos-arm64_darwin_arm64/pm-creds'
+
+archives:
+  - id: "pm-creds"
+    format: "zip"
+    replacements:
+      amd64: "x64"
+      386: "x86"
+      darwin: "macOS"
+
+source:
+  enabled: true
