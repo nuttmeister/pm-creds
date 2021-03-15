@@ -25,6 +25,7 @@ if [ "${GOOS}" = "darwin" ]; then
 	ditto -c -k --keepParent --rsrc pm-creds ${FILENAME}.zip
 	xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds.zip" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ${FILENAME}.zip
 elif [ "${GOOS}" = "windows" ]; then
+	mv pm-creds pm-creds.exe
 	# npm install --save-dev signcode
 	# ./node_modules/signcode/cli.js sign ${FILENAME}.exe \
 	# 	--cert cert-win.p12 \
