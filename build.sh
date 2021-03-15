@@ -23,7 +23,7 @@ if [ "${GOOS}" = "darwin" ]; then
 	codesign --force --timestamp --options runtime --sign "${AC_APPID}" pm-creds
 	codesign --verify --verbose pm-creds
 	ditto -c -k --keepParent --rsrc pm-creds ${FILENAME}.zip
-	xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds.zip" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ${FILENAME}.zip
+	xcrun altool --notarize-app --primary-bundle-id "se.execit.pm-creds" -u "${AC_USERNAME}" -p "${AC_PASSWORD}" -t osx -f ${FILENAME}.zip
 elif [ "${GOOS}" = "windows" ]; then
 	mv pm-creds pm-creds.exe
 	# npm install --save-dev signcode
